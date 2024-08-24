@@ -15,11 +15,15 @@ add_action('manage_pages_custom_column', 'WP_Title_Automatic_render_title_genera
 // Ajout de l'option groupée
 add_action('admin_footer', 'WP_Title_Automatic_bulk_action_script');
 function WP_Title_Automatic_bulk_action_script() {
+    global $current_screen;
+    if ($current_screen->base !== 'edit') {
+        return;
+    }
     ?>
     <script>
         jQuery(document).ready(function($) {
-            $('#bulk-action-selector-top, #bulk-action-selector-bottom').append('<option value="generate_titles"><?php _e("Générer les titres", "wp-title-automatic"); ?></option>');
-            
+            $('#bulk-action-selector-top, #bulk-action-selector-bottom').append('<option value="generate_titles"><?php _e("Générer les titres", "textdomain"); ?></option>');
+
             $('body').on('click', '#doaction, #doaction2', function(e) {
                 if ($('select[name="action"]').val() === 'generate_titles' || $('select[name="action2"]').val() === 'generate_titles') {
                     e.preventDefault();
@@ -33,13 +37,18 @@ function WP_Title_Automatic_bulk_action_script() {
                     function generateTitle() {
                         if (index < post_ids.length) {
                             var post_id = post_ids[index];
+                            var $checkbox = $('tbody input[type="checkbox"][value="' + post_id + '"]');
+                            var $row = $checkbox.closest('tr');
+                            var postTitle = $row.find(".row-title").text().trim();
+                            var consider_option = '<?php echo esc_js(get_option('wpta_settings')['wpta_consider_title'] ?? 'existing'); ?>';
+
                             var data = {
                                 action: 'WP_Title_Automatic_get_title_suggestions',
                                 post_id: post_id,
-                                prompt: WPTitleAutomatic.settings.wpta_prompt,
-                                suggestions: WPTitleAutomatic.settings.wpta_suggestions,
-                                consider_option: WPTitleAutomatic.settings.wpta_consider_title,
-                                nonce: WPTitleAutomatic.nonce
+                                prompt: '<?php echo esc_js(get_option('wpta_settings')['wpta_prompt'] ?? ''); ?>',
+                                suggestions: <?php echo json_encode(get_option('wpta_settings')['wpta_suggestions'] ?? []); ?>,
+                                consider_option: consider_option,
+                                title: postTitle
                             };
 
                             $.post(WPTitleAutomatic.ajaxurl, data, function(response) {
@@ -51,10 +60,8 @@ function WP_Title_Automatic_bulk_action_script() {
                                     $.post(WPTitleAutomatic.ajaxurl, {
                                         action: 'WP_Title_Automatic_update_post_title',
                                         post_id: post_id,
-                                        new_title: newTitle,
-                                        nonce: WPTitleAutomatic.nonce
+                                        new_title: newTitle
                                     }, function() {
-                                        var $row = $('tbody input[type="checkbox"][value="' + post_id + '"]').closest('tr');
                                         $row.find(".row-title").text(newTitle);
                                         $row.css("background-color", "#fff2f2");
                                         setTimeout(function() {
@@ -81,16 +88,13 @@ function WP_Title_Automatic_bulk_action_script() {
     <?php
 }
 
-// Ajouter la colonne d'actions
 function WP_Title_Automatic_add_title_generate_button_column($columns) {
-    $columns['generate_title'] = __('Actions', 'wp-title-automatic');
+    $columns['generate_title'] = __('Actions', 'textdomain');
     return $columns;
 }
-
-// Ajouter le bouton de génération de titres
 function WP_Title_Automatic_render_title_generate_button($column, $post_id) {
     if ($column === 'generate_title') {
-        echo '<button class="gencode-generate-title-button" data-post-id="' . esc_attr($post_id) . '" style="background-color: #0073aa; color: white; border: none; padding: 5px 8px; cursor: pointer; margin-top: 5px !important; line-height: 22px;">' . __('Générer un titre', 'wp-title-automatic') . '</button>';
+        echo '<button class="gencode-generate-title-button" data-post-id="' . esc_attr($post_id) . '" style="background-color: #0073aa; color: white; border: none; padding: 5px 8px; cursor: pointer; margin-top: 5px !important; line-height: 22px;">' . __('Générer un titre', 'textdomain') . '</button>';
     }
 }
 
@@ -99,15 +103,6 @@ add_action('wp_ajax_WP_Title_Automatic_get_title_suggestions', 'WP_Title_Automat
 add_action('wp_ajax_WP_Title_Automatic_update_post_title', 'WP_Title_Automatic_update_post_title');
 
 function WP_Title_Automatic_get_title_suggestions() {
-    // Vérifiez le nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'wpta_nonce')) {
-        wp_die(__('Nonce validation failed', 'wp-title-automatic'), '', 403);
-    }
-// Vérifiez que l'utilisateur a les permissions nécessaires
-    if (!current_user_can('manage_options')) {
-        wp_die(__('Vous n’avez pas les permissions nécessaires pour faire cette action.', 'wp-title-automatic'), '', 403);
-    }
-
     $title = sanitize_text_field($_POST['title']);
     $post_id = intval($_POST['post_id']);
     $prompt = sanitize_text_field($_POST['prompt']);
@@ -116,7 +111,7 @@ function WP_Title_Automatic_get_title_suggestions() {
 
     $first_300_words = '';
 
-    // Récupération du contenu du post pour les 300 premiers mots
+    // Récupération du contenu du post pour les 300 premiers mots ou titre existant
     if ($consider_option === 'first_300') {
         $post = get_post($post_id);
         if ($post) {
@@ -124,6 +119,12 @@ function WP_Title_Automatic_get_title_suggestions() {
             $words = explode(' ', $content);
             $first_300_words = implode(' ', array_slice($words, 0, 300));
             $prompt .= "Contexte : " . $first_300_words . "\n";
+        }
+    } elseif ($consider_option === 'existing') {
+        $post = get_post($post_id);
+        if ($post) {
+            $title = $post->post_title;
+            $prompt .= "Titre existant : " . $title . "\n";
         }
     }
 
@@ -180,7 +181,6 @@ function WP_Title_Automatic_call_openai_api($title, $prompt) {
 
     $body = wp_remote_retrieve_body($response);
     $data = json_decode($body, true);
-
     $suggestions = [];
     if (isset($data['choices']) && isset($data['choices'][0]['message']['content'])) {
         $content = trim($data['choices'][0]['message']['content']);
@@ -194,16 +194,6 @@ function WP_Title_Automatic_call_openai_api($title, $prompt) {
 }
 
 function WP_Title_Automatic_update_post_title() {
-    // Vérifiez le nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'wpta_nonce')) {
-        wp_die(__('Nonce validation failed', 'wp-title-automatic'), '', 403);
-    }
-
-    // Vérifiez que l'utilisateur a les permissions nécessaires
-    if (!current_user_can('manage_options')) {
-        wp_die(__('Vous n’avez pas les permissions nécessaires pour faire cette action.', 'wp-title-automatic'), '', 403);
-    }
-
     $post_id = intval($_POST['post_id']);
     $new_title = sanitize_text_field($_POST['new_title']);
     wp_update_post(['ID' => $post_id, 'post_title' => $new_title]);

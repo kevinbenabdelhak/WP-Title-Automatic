@@ -1,10 +1,5 @@
 <?php
 
-if (!defined('ABSPATH')) {
-    exit; // Sortir si accès direct
-}
-
-
 // Ajout de la page d'options dans le menu Admin
 add_action('admin_menu', 'WP_Title_Automatic_add_admin_menu');
 function WP_Title_Automatic_add_admin_menu() {
