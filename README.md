@@ -33,14 +33,6 @@ Oui, vous pouvez modifier tous vos titres grâce aux actions groupées sur la pa
 ### Ce plugin fonctionne-t-il avec certains types de publications personnalisées ?
 Oui, WP Title Automatic devrait fonctionner avec tous les types de publications personnalisées.
 
-### Puis-je désactiver la génération automatique pour certaines publications ou pages ?
-Actuellement, ce plugin génère des titres pour toutes les publications et pages. Une option de désactivation par publication pourrait être ajoutée dans les futures mises à jour.
-
-## Screenshots
-
-1. Capture d'écran de la page de réglages du plugin.
-2. Exemple de titre généré automatiquement pour une publication.
-3. Exemple de titre généré automatiquement pour une page.
 
 ## Changelog
 
