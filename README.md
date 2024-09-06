@@ -5,7 +5,7 @@
 **Tags:** title, automatic titles, post title, page title  
 **Requires at least:** 5.0  
 **Tested up to:** 6.6.1  
-**Stable tag:** 1.0  
+**Stable tag:** 1.1
 **License:** GPLv2 or later  
 **License URI:** [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -36,5 +36,8 @@ Oui, WP Title Automatic devrait fonctionner avec tous les types de publications 
 
 ## Changelog
 
+### 1.1
+* Bug corrigé concernant l'année actuelle dans les titres automatisés
+  
 ### 1.0
 * Version initiale de WP Title Automatic. Génération automatique des titres pour les publications et les pages.
