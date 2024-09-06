@@ -4,7 +4,7 @@ Plugin URI: https://kevin-benabdelhak.fr/plugins/wp-title-automatic/
 Tags: title, automatic titles, post title, page title
 Requires at least: 5.0
 Tested up to: 6.6.1
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,6 +42,9 @@ Actuellement, ce plugin génère des titres pour toutes les publications et page
 3. Exemple de titre généré automatiquement pour une page.
 
 == Changelog ==
+
+= 1.1 =
+* Bug corrigé concernant l'année actuelle dans les titres automatisés
 
 = 1.0 =
 * Version initiale de WP Title Automatic. Génération automatique des titres pour les publications et les pages.
