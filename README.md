@@ -9,11 +9,9 @@
 **License:** GPLv2 or later  
 **License URI:** [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
-Génère automatiquement des titres pour les publications et les pages.
-
-## Description
-
 **WP Title Automatic** est un plugin qui automatise la génération de titres pour vos publications et pages WordPress. Plus besoin de vous soucier de trouver le titre parfait : ce plugin le fait pour vous !
+
+[![Voir le tutoriel](https://img.youtube.com/vi/nQ99TqrHdJc/maxresdefault.jpg)](https://www.youtube.com/watch?v=nQ99TqrHdJc&ab_channel=KevinBenabdelhak)
 
 ## Installation
 
