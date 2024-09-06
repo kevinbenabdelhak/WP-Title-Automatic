@@ -2,7 +2,7 @@
 
 
 if (!defined('ABSPATH')) {
-    exit; // Sortir si accès direct
+    exit; 
 }
 
 

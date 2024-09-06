@@ -1,5 +1,10 @@
 <?php
 
+
+if (!defined('ABSPATH')) {
+    exit; 
+}
+
 // Ajout de la page d'options dans le menu Admin
 add_action('admin_menu', 'WP_Title_Automatic_add_admin_menu');
 function WP_Title_Automatic_add_admin_menu() {
@@ -68,11 +73,12 @@ function WP_Title_Automatic_prompt_render() {
 function WP_Title_Automatic_suggestions_render() {
     $options = get_option('wpta_settings');
     $suggestions = $options['wpta_suggestions'] ?? [];
+    $current_year = date('Y'); // Récupération de l'année actuelle
     $suggestion_options = [
         'Ajouter un verbe au début des titres',
         'Utiliser des adjectifs attractifs',
         'Faire des titres interrogatifs',
-        'Inclure l’année dans le titre',
+        'Inclure l’année ' . $current_year . ' dans le titre',
         'Utiliser des chiffres dans le titre'
     ];
     
