@@ -3,7 +3,7 @@
  * Plugin Name: WP Title Automatic
  * Plugin URI: https://kevin-benabdelhak.fr/plugins/wp-title-automatic/
  * Description: Génère automatiquement des titres pour les publications et les pages.
- * Version: 1.0
+ * Version: 1.1
  * Author: Kevin Benabdelhak
  * Author URI: https://kevin-benabdelhak.fr/
  * Contributors: kevinbenabdelhak
