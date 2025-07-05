@@ -1,0 +1,38 @@
+.wpta-settings { 
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 40px 29px;
+    background-color: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+}
+.wpta-settings h1 { 
+    text-align: center; 
+}
+.wpta-settings h2 { 
+    text-align: center; margin-top:12px;
+}
+.wpta-settings input[type="text"],
+.wpta-settings textarea { 
+    width: 100%; 
+    padding: 10px; 
+    margin: 10px 0; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+}
+.wpta-settings label { 
+    display: block; 
+    margin: 10px 0; 
+}
+.wpta-settings .submit { 
+    text-align: center; 
+}
+.form-table td {
+    line-height: 3px !important;
+    display: flex;
+    flex-direction: column;
+}
+.form-table th { 
+    padding: 24px 10px 20px 0 !important;
+}
